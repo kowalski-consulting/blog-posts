@@ -1,0 +1,34 @@
+#+TITLE:     Install ruby on OmniOS
+#+AUTHOR:    Piotr Kowalski (pi)
+#+EMAIL:     piotr.kowalski@me.com
+#+DATE:      <2013-04-29 Mon>
+#+OPTIONS:   toc:nil
+
+* Let start simple
+  I didn't know how to install ruby on Solaris derivatives like
+  OpenIndiana or OmniOS. But finally I figured it out and here it is
+  the list of steps:
+** Install tools for OmniOS the following step should do the trick:
+   #+BEGIN_SRC
+   root@zweb1:~# pkg install \
+                   developer/gcc46 \
+                   developer/object-file \
+                   developer/linker \
+                   developer/library/lint \
+                   developer/build/gnu-make \
+                   system/header \
+                   system/library/math/header-math
+   #+END_SRC
+
+** Install rbenv and ruby-build
+   And install ruby version you want, the key thing here is to use
+   ~--with-opt-dir~ with *absolute path to ruby installation*
+   : root@zweb1:~# CONFIGURE_OPTS="ac_cv_func_dl_iterate_phdr=no --with-opt-dir=/root/.rbenv/versions/1.9.3-p392" rbenv install 1.9.3-p392
+
+* References
+  - http://omnios.omniti.com/wiki.php/DevEnv
+  - https://github.com/omniti-labs/omnios-build/blob/omniti-ms/build/ruby-19/build.sh
+  - https://github.com/sstephenson/rbenv
+  - https://github.com/sstephenson/ruby-build
+  - https://github.com/sstephenson/ruby-build/issues/119
+  - https://bugs.ruby-lang.org/issues/5384
