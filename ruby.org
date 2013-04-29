@@ -1,4 +1,4 @@
-#+TITLE:     Install ruby on OmniOS
+#+TITLE:     Install ruby on OpenSolaris (OpenIndiana, OmniOS)
 #+AUTHOR:    Piotr Kowalski (pi)
 #+EMAIL:     piotr.kowalski@me.com
 #+DATE:      <2013-04-29 Mon>
@@ -20,10 +20,20 @@
                    system/library/math/header-math
    #+END_SRC
 ** Install rbenv and ruby-build
+   Install rbenv globally e.g. in ~/opt/rbenv~ like this:
+   : git clone git://github.com/sstephenson/rbenv.git /opt/rbenv
+   Update ~~/.bash_profile~:
+   : echo 'export RBENV_ROOT="/opt/rbenv"' >> ~/.bash_profile
+   : echo 'export PATH="/opt/rbenv/bin:$PATH"' >> ~/.bash_profile
+   : echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
+   And install ruby-build
+   : git clone https://github.com/sstephenson/ruby-build.git /opt/rbenv/plugins/ruby-build
+
+** Install ruby version
    And install ruby version you want:
-   : root@zweb1:~# CONFIGURE_OPTS="ac_cv_func_dl_iterate_phdr=no --with-opt-dir=/root/.rbenv/versions/1.9.3-p392" rbenv install 1.9.3-p392
+   : root@zweb1:~# CONFIGURE_OPTS="ac_cv_func_dl_iterate_phdr=no --with-opt-dir=/opt/rbenv/versions/1.9.3-p392" rbenv install 1.9.3-p392
    - the key thing here is to use ~--with-opt-dir~ with *absolute
-     path to ruby installation* because of ~psych~ missing dependency
+     path to ruby installation* because of ~psych~  missing dependency
    - don't forget to set mysterious option
      ~ac_cv_func_dl_iterate_phdr~ to ~no~
 
@@ -34,3 +44,4 @@
   - https://github.com/sstephenson/ruby-build
   - https://github.com/sstephenson/ruby-build/issues/119
   - https://bugs.ruby-lang.org/issues/5384
+  - http://www.vxnick.com/blog/2012/04/setting-up-rbenv-globally/
