@@ -6,9 +6,9 @@
 
 * Let start simple
   I didn't know how to install ruby on Solaris derivatives like
-  OpenIndiana or OmniOS. But finally I figured it out and here it is
-  the list of steps:
-** Install tools for OmniOS the following step should do the trick:
+  OpenIndiana or OmniOS but finally I figured it out and here is
+  the list of steps to get it working:
+** Install dev tools, for OmniOS the following step should do the trick:
    #+BEGIN_SRC
    root@zweb1:~# pkg install \
                    developer/gcc46 \
@@ -19,11 +19,13 @@
                    system/header \
                    system/library/math/header-math
    #+END_SRC
-
 ** Install rbenv and ruby-build
-   And install ruby version you want, the key thing here is to use
-   ~--with-opt-dir~ with *absolute path to ruby installation*
+   And install ruby version you want:
    : root@zweb1:~# CONFIGURE_OPTS="ac_cv_func_dl_iterate_phdr=no --with-opt-dir=/root/.rbenv/versions/1.9.3-p392" rbenv install 1.9.3-p392
+   - the key thing here is to use ~--with-opt-dir~ with *absolute
+     path to ruby installation* because of ~psych~ missing dependency
+   - don't forget to set mysterious option
+     ~ac_cv_func_dl_iterate_phdr~ to ~no~
 
 * References
   - http://omnios.omniti.com/wiki.php/DevEnv
