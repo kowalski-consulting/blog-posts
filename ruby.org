@@ -10,28 +10,28 @@
   the list of steps to get it working:
 ** Install dev tools, for OmniOS the following step should do the trick:
    #+BEGIN_SRC
-   root@zweb1:~# pkg install \
-                   developer/gcc46 \
-                   developer/object-file \
-                   developer/linker \
-                   developer/library/lint \
-                   developer/build/gnu-make \
-                   system/header \
-                   system/library/math/header-math
+   # pkg install \
+       developer/gcc46 \
+       developer/object-file \
+       developer/linker \
+       developer/library/lint \
+       developer/build/gnu-make \
+       system/header \
+       system/library/math/header-math
    #+END_SRC
 ** Install rbenv and ruby-build
    Install rbenv globally e.g. in ~/opt/rbenv~ like this:
-   : git clone git://github.com/sstephenson/rbenv.git /opt/rbenv
+   : # git clone git://github.com/sstephenson/rbenv.git /opt/rbenv
    Update ~~/.bash_profile~:
-   : echo 'export RBENV_ROOT="/opt/rbenv"' >> ~/.bash_profile
-   : echo 'export PATH="/opt/rbenv/bin:$PATH"' >> ~/.bash_profile
-   : echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
+   : # echo 'export RBENV_ROOT="/opt/rbenv"' >> ~/.bash_profile
+   : # echo 'export PATH="/opt/rbenv/bin:$PATH"' >> ~/.bash_profile
+   : # echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
    And install ruby-build
-   : git clone https://github.com/sstephenson/ruby-build.git /opt/rbenv/plugins/ruby-build
+   : # git clone https://github.com/sstephenson/ruby-build.git /opt/rbenv/plugins/ruby-build
 
 ** Install ruby version
    And install ruby version you want:
-   : root@zweb1:~# CONFIGURE_OPTS="ac_cv_func_dl_iterate_phdr=no --with-opt-dir=/opt/rbenv/versions/1.9.3-p392" rbenv install 1.9.3-p392
+   : # CONFIGURE_OPTS="ac_cv_func_dl_iterate_phdr=no --with-opt-dir=/opt/rbenv/versions/1.9.3-p392" rbenv install 1.9.3-p392
    - the key thing here is to use ~--with-opt-dir~ with *absolute
      path to ruby installation* because of ~psych~  missing dependency
    - don't forget to set mysterious option
