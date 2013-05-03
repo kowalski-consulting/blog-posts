@@ -1,0 +1,65 @@
+#+TITLE:     Deploy on OmniOS
+#+AUTHOR:    Piotr Kowalski (pi)
+#+EMAIL:     piotr.kowalski@me.com
+#+DATE:      <2013-05-02 Thu>
+#+OPTIONS:   toc:nil
+
+* Install and configure Apache httpd
+  OmniOS extras comes with precompiled version of apache22. Most of
+  the useful modules are compiled statically into it and the example
+  ~httpd.conf~ file is commented extensively.
+  - Add pkg publisher with extra stuff
+    : # pkg set-publisher -g http://pkg.omniti.com/omniti-ms/ ms.omniti.com
+  - Install apache httpd
+    : # pkg install apache22
+    : # pkg install mod_log_rotate
+  - Configure it by creating necessary files (depends on your configuration)
+    : # mkdir -p /www/{etc,htdocs,logs,servers,var/run}
+    : # cp /opt/apache22/conf/mime.types /www/etc/
+  - Enable service
+    : # svcadm enable http:apache22
+    and check if it works
+    : # svcs -xv
+
+* Install PostgreSQL
+  Fortunately fresh PostgreSQL database is available from the repo
+  but I couldn't find manifest and run script.
+  - Install package
+    : # pkg install ms.omniti.com/omniti/database/postgresql-924
+  - Clone git repo with svcs
+    : # git clone https://github.com/pibako/svcs-postgres-92.git /tmp/svcs-postgres-92
+    : # cd /tmp/svcs-postgres-92
+    : # /bin/sh ./install.sh
+  - After first initialization
+    : # svcadm enable postgresql_92
+    set database initialization flag to true (this should happen
+    automatically but it doesn't probably because script is running as
+    a ~postgres~ user and it doesn't have permissions to set
+    configuration for its own service).
+    : # svccfg -s $SMF_FMRI "setprop postgresql_92/initialized = boolean: true"
+    : # svccfg -s $SMF_FMRI refresh
+  - Just in case add to your ~auto_home~
+    : # echo "*       localhost:/export/home/&" >> /etc/auto_home
+
+* Create and configure deployer user
+  - Create user
+    : # mkdir -p /export/home/
+    : # useradd -u 1000 -g 10 -m -d /export/home/deployer -s /bin/bash deployer
+  - Edit with ~visudo~
+    : # visudo
+    and uncomment the following
+    : %sudo ALL=(ALL) NOPASSWD: ALL
+  - Create sudo group and add deployer
+    : # groupadd sudo
+    : # usermod -G sudo deployer
+
+* Compile imagemagick
+  ImageMagick is available as a precompiled package but it doesn't
+  work with RMagick so you need it to compile from source (at least I
+  had to). TBD.
+
+* References
+  - http://virtuallyhyper.com/2013/04/installing-and-configuring-omnios/
+  - http://omnios.omniti.com/wiki.php/GeneralAdministration
+  - https://github.com/stefri/omnios-build/tree/cc4a53561e5cd57def075fc5777ac11b0078438c/build/postgres92
+  - https://github.com/omniti-labs/omnios-build/tree/omniti-ms/build/apache22
