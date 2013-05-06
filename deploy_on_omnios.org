@@ -40,8 +40,25 @@
     : # svccfg -s $SMF_FMRI refresh
   - Just in case add to your ~auto_home~
     : # echo "*       localhost:/export/home/&" >> /etc/auto_home
+* Configure PostgreSQL
+  There are two things necessary two make it up and running.
+  - Create role and database. For this purpose login as a ~postgres~
+    user:
+    : $ su - postgres
+    : $ /opt/pgsql92/bin/psql
+    : > CREATE ROLE displejo LOGIN ENCRYPTED PASSWORD 'secret_password' NOINHERIT VALID UNTIL 'infinity';
+    : > CREATE DATABASE displejo OWNER displejo ENCODING 'utf8' TEMPLATE template0;
+  - If you want to change password for role you can easily do it:
+    : > ALTER ROLE displejo PASSWORD 'new_secret_password';
+  - Configure database files e.g. in ~pg_hba.conf~ add the following
+    line:
+    : host    displejo        displejo        10.0.6.1/32             trust
+    and in ~postgresql.conf~ add:
+    : listen_addresses = '10.0.7.1'
 
 * Create and configure deployer user
+  - Auto mount home directory
+    : # echo "*       localhost:/export/home/&" >> /etc/auto_home
   - Create user
     : # mkdir -p /export/home/
     : # useradd -u 1000 -g 10 -m -d /export/home/deployer -s /bin/bash deployer
@@ -53,13 +70,41 @@
     : # groupadd sudo
     : # usermod -G sudo deployer
 
-* Compile imagemagick
-  ImageMagick is available as a precompiled package but it doesn't
-  work with RMagick so you need it to compile from source (at least I
-  had to). TBD.
+* Configure ImageMagick
+  On OpenIndiana ImageMagick is available as a precompiled package but
+  it doesn't work with RMagick so you need it to compile from source
+  (at least I had to). OmniOS provides fairly recent version of
+  ImageMagick and should work out of the box except one
+  thing... fonts.
+  - Install ghostscript fonts to ~/opt/fonts~:
+    : # wget ftp://ftp.imagemagick.org/pub/ImageMagick/delegates/ghostscript-fonts-std-8.11.tar.gz
+    : # tar -xzf ghostscript-fonts-std-8.11.tar.gz
+    : # mv fonts /opt/
+  - Modify ~/opt/omni/etc/ImageMagick/type-ghostscript.xml~ prefixing each ~metrics~ and
+    ~glyphs~ with ~/opt/fonts/~
+  - Move ~type-ghostscript.xml~ to ~type.xml~
+
+* Install pkg-config
+  In order to install several gems it is useful to have ~pkg-config~
+  installed. Unfortunately OmniOS doesn't come with pkg-config in any
+  repository therefore we must install it from source. Fortunately it
+  won't be to difficult.
+  - First download latest release and unpack it:
+    : # wget http://pkgconfig.freedesktop.org/releases/pkg-config-0.28.tar.gz
+    : # tar -xzf pkg-config-0.28.tar.gz
+  - Then compile it and install (by default in ~/usr/local/~)
+    : # cd ~/pkg-config-0.28
+    : # ./configure --with-internal-glib
+    : # make && make install
+  - Lastly modify your $PATH to include ~/usr/local/bin~ and set
+    ~PKG_CONFIG_PATH~ variable.
+    : # echo "export PATH=$PATH:/usr/local/bin" >> ~/.profile
+    : # echo "export PKG_CONFIG_PATH=/opt/omni/lib/pkgconfig:$PKG_CONFIG_PATH" >> ~/.profile
 
 * References
   - http://virtuallyhyper.com/2013/04/installing-and-configuring-omnios/
   - http://omnios.omniti.com/wiki.php/GeneralAdministration
   - https://github.com/stefri/omnios-build/tree/cc4a53561e5cd57def075fc5777ac11b0078438c/build/postgres92
   - https://github.com/omniti-labs/omnios-build/tree/omniti-ms/build/apache22
+  - http://rmagick.rubyforge.org/install-faq.html#fonts
+  - http://www.imagemagick.org/script/resources.php
