@@ -96,10 +96,22 @@
     : # cd ~/pkg-config-0.28
     : # ./configure --with-internal-glib
     : # make && make install
-  - Lastly modify your $PATH to include ~/usr/local/bin~ and set
-    ~PKG_CONFIG_PATH~ variable.
+  - Lastly modify your ~$PATH~ to include ~/usr/local/bin~ and set
+    ~$PKG_CONFIG_PATH~ variable.
     : # echo "export PATH=$PATH:/usr/local/bin" >> ~/.profile
     : # echo "export PKG_CONFIG_PATH=/opt/omni/lib/pkgconfig:$PKG_CONFIG_PATH" >> ~/.profile
+
+* Install nodejs
+  We must compile it from source.
+  - So grab the latest version from http://nodejs.org/download/ and
+    unpack it:
+    : $ wget http://nodejs.org/dist/v0.10.5/node-v0.10.5.tar.gz
+    : $ tar -xzf node-v0.10.5.tar.gz && cd node-v0.10.5
+  - Add ~gcc~ to your path (it is in ~/opt/~ directory)
+  - Configure node
+    : $ CC=gcc ./configure
+    : $ PATH=/usr/gnu/i386-pc-solaris2.11/bin:$PATH make
+    : # make install
 
 * References
   - http://virtuallyhyper.com/2013/04/installing-and-configuring-omnios/
