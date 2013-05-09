@@ -20,12 +20,19 @@
     : # svcadm enable http:apache22
     and check if it works
     : # svcs -xv
+  - To find installed ~node~, ~passenger~ needs a path to search and
+    unfortunately I couldn't find a cleaner way than setting it
+    directly in apache ~httpd.conf~ configuration file. You must set
+    it before virtual host e.g.:
+    : SetEnv PATH /usr/local/bin:/opt/omni/bin:/opt/omni/bin/i386/:/usr/gnu/bin:/usr/bin:/usr/sbin:/sbin
 
 * Install PostgreSQL
   Fortunately fresh PostgreSQL database is available from the repo
   but I couldn't find manifest and run script.
   - Install package
     : # pkg install ms.omniti.com/omniti/database/postgresql-924
+    and pg client library
+    : # pkg install omniti/library/libpq5
   - Clone git repo with svcs
     : # git clone https://github.com/pibako/svcs-postgres-92.git /tmp/svcs-postgres-92
     : # cd /tmp/svcs-postgres-92
