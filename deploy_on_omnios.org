@@ -127,3 +127,4 @@
   - https://github.com/omniti-labs/omnios-build/tree/omniti-ms/build/apache22
   - http://rmagick.rubyforge.org/install-faq.html#fonts
   - http://www.imagemagick.org/script/resources.php
+  - http://blog.phusion.nl/2008/12/16/passing-environment-variables-to-ruby-from-phusion-passenger/
