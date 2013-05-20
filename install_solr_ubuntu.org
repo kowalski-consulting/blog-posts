@@ -1,0 +1,46 @@
+#+TITLE:     Install Apache Solr inside Tomcat on Ubuntu 12.04 LTS
+#+AUTHOR:    Piotr Kowalski (pi)
+#+EMAIL:     piotr.kowalski@me.com
+#+DATE:      <2013-05-19 Sun>
+#+OPTIONS:   toc:nil
+
+* Install Tomcat
+  - Install fresh java in this case Java 7:
+    : # aptitude install openjdk-7-jdk
+  - Install Tomcat app and management utilities server:
+    : # aptitude install tomcat6 tomcat6-common tomcat6-examples tomcat6-admin tomcat6-user
+  - Once installed, grant users:
+    : # vi /etc/tomcat6/tomcat-users.xml
+    and paste these lines:
+    : <role rolename="manager"/>
+    : <role rolename="admin"/>
+    : <user username="tomcat" password="tomcat" roles="manager,admin"/>
+
+* Install Apache Solr
+  - Download Apache Solr version 3.6.2 (the current version working
+    with Sunspot ruby gem.
+    : $ cd /tmp/
+    : $ wget http://ftp.ps.pl/pub/apache/lucene/solr/3.6.2/apache-solr-3.6.2.tgz
+    : $ tar -xzf apache-solr-3.6.2.tgz
+    : $ cd apache-solr-3.6.2
+  - Create solr home directory:
+    : # mkdir /solr
+    and copy the Solr webapp and the example configuration file:
+    : # cp dist/apache-solr-3.6.2.war /solr/solr.war
+    : # cp -R apache-solr-3.6.2/example/solr/* /solr/
+    : # chown -R tomcat6 /solr/
+  - Create configuration file:
+    : # vi /etc/tomcat6/Catalina/localhost/solr.xml
+    and add configuration specific for solr:
+    : <Context docBase="/solr/solr.war" debug="0" privileged="true" allowLinking="true" crossContext="true">
+    :   <Environment name="solr/home" type="java.lang.String" value="/solr" override="true" />
+    : </Context>
+  - Finally modify init script ~/etc/init.d/tomcat6~ to set Solr home
+    directory:
+    : JAVA_OPTS="$JAVA_OPTS -Dsolr.home=/solr"
+  - Restart Tomcat:
+    : # service tomcat6 restart
+
+* References
+  - http://feinan.com/2012/05/19/how-to-install-solr-3-6-0-on-ubuntu-12-04-lts/
+  - https://github.com/sunspot/sunspot/wiki/Configure-Solr-on-Ubuntu,-the-quickest-way
