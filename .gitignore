@@ -2,3 +2,4 @@
 *.tex
 *.html
 *.odt
+.DS_Store

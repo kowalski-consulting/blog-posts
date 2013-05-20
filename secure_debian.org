@@ -1,0 +1,57 @@
+#+TITLE:     Secure Debian
+#+AUTHOR:    Piotr Kowalski (pi)
+#+EMAIL:     piotr.kowalski@me.com
+#+DATE:      <2013-05-09 Thu>
+#+OPTIONS:   toc:nil
+
+* Change password to something long:
+  : # passwd
+* Update system:
+  : # apt-get update
+  : # apt-get upgrade
+* Install logging daemon to monitor login attempts:
+  : # apt-get install fail2ban
+* Setup new user:
+  : # useradd deploy
+  : # mkdir /home/deploy
+  : # mkdir /home/deploy/.ssh
+  : # chmod 700 /home/deploy/.ssh
+* Require public key authorization:
+  : # vi /home/deploy/.ssh/authorized_keys
+  : # chmod 400 /home/deploy/.ssh/authorized_keys
+  : # chown deploy:deploy /home/deploy -R
+* Create password for sudo user:
+  : # passwd deploy
+* And add the following:
+  : # visudo~
+  : deploy  ALL=(ALL) NOPASSWD: ALL
+* Lock ssh password login:
+  : # vim /etc/ssh/sshd_config
+  : PermitRootLogin no
+  : PasswordAuthentication no
+  : AllowUsers deploy@(your-ip) deploy@(another-ip-if-any)
+  : # service ssh restart
+* Set up a firewall:
+  : ufw allow 22
+  : ufw allow 80
+  : ufw allow 443
+  : ufw enable
+* Enable automatic security updates:
+  : # apt-get install unattended-upgrades
+  : # vim /etc/apt/apt.conf.d/10periodic
+  : APT::Periodic::Update-Package-Lists "1";
+  : APT::Periodic::Download-Upgradeable-Packages "1";
+  : APT::Periodic::AutocleanInterval "7";
+  : APT::Periodic::Unattended-Upgrade "1";
+  : # vim /etc/apt/apt.conf.d/50unattended-upgrades
+  : Unattended-Upgrade::Allowed-Origins {
+  :         "Ubuntu lucid-security";
+  : //      "Ubuntu lucid-updates";
+  : };
+* Install Logwatch to keep an eye on things:
+  : # apt-get install logwatch
+  : # vim /etc/cron.daily/00logwatch
+  : /usr/sbin/logwatch --output mail --mailto test@gmail.com --detail high
+
+* References
+  - http://plusbryan.com/my-first-5-minutes-on-a-server-or-essential-security-for-linux-servers
