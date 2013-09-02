@@ -1,0 +1,20 @@
+#+TITLE:     How to compile emacs from source on OpenSolaris (OpenIndiana, OmniOS)
+#+AUTHOR:    Piotr Kowalski (pi)
+#+EMAIL:     piotr.kowalski@me.com
+#+DATE:      <2013-09-02 Mon>
+#+OPTIONS:   toc:nil
+
+* Installation process
+** Download
+  : $ curl -LO http://ftp.gnu.org/gnu/emacs/emacs-24.3.tar.gz
+  : $ tar -xzf emacs-24.3.tar.gz
+
+** Configure
+   : $ ./configure --without-x
+
+** Compile and install
+   : $ LIBS="-lcurses" make
+   : # make install
+
+* References
+  - http://www.linuxquestions.org/questions/programming-9/undefined-reference-errors-with-static-compile-dynamic-works-fine-929359/
