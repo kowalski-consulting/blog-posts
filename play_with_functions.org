@@ -1,0 +1,35 @@
+#+TITLE:     Play with functions
+#+AUTHOR:    Piotr Kowalski (pi)
+#+EMAIL:     piotr.kowalski@me.com
+#+DATE:      <2013-10-12 Sat>
+#+OPTIONS:   toc:nil
+
+* Task #1:
+  Calculate the product of the first 10 natural numbers, of the first
+  20 natural numbers, up to the first 50 natural numbers.
+
+** Solutions
+
+*** Haskell:
+    : Prelude> [product [1..x] | x <- [10,20..50]]
+
+*** Scala:
+    : scala> for ( i <- 10 until 51 by 10 ) yield (BigInt(1) until i + 1).product
+    : scala> 10 until 51 by 10 map {v => (BigInt(1) until (v + 1)).product}
+
+*** Clojure
+    : user=> (for [x (range 10,51,10)] (reduce * (range 1N (+ x 1))))
+    : user=> (map (fn [x] (reduce * (range 1N x))) (range 10 51 10))
+
+*** Ruby
+    : >> (10..50).step(10).map {|x| (1..x).reduce {|acc,y| acc*y}}
+
+** Output
+   : [3628800,
+   :  2432902008176640000,
+   :  265252859812191058636308480000000,
+   :  815915283247897734345611269596115894272000000000,
+   :  30414093201713378043612608166064768844377641568960512000000000000]
+
+* References
+  - #1: https://groups.google.com/d/msg/golang-nuts/uISdF7UOEFE/EOeFSo3yahwJ
